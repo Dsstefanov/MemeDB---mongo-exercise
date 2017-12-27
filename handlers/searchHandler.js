@@ -28,16 +28,28 @@ module.exports = (req, res) => {
             if(Object.keys(imageQuery).length === 0 && imageQuery.constructor === Object){
                 imageQuery = null
             }
-            Tag.find(query).populate({
-                path: 'images',
-                match: { creationDate:  imageQuery }
-            })
-                .sort('-creationDate')
-                .then(tags => {
-                    showContent(tags, html, req.pathquery, res)
-                }).catch(err => {
-                console.error(err.message)
-            })
+            if(imageQuery){
+                Tag.find(query).populate({
+                    path: 'images',
+                    match: { creationDate:  imageQuery }
+                })
+                    .sort('-creationDate')
+                    .then(tags => {
+                        showContent(tags, html, req.pathquery, res)
+                    }).catch(err => {
+                    console.error(err.message)
+                })
+            }else{
+                Tag.find(query).populate({
+                    path: 'images'
+                })
+                    .sort('-creationDate')
+                    .then(tags => {
+                        showContent(tags, html, req.pathquery, res)
+                    }).catch(err => {
+                    console.error(err.message)
+                })
+            }
         })
     } else {
         return true
